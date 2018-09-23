@@ -1,2 +1,30 @@
 ---
-# tasks file for sqlserver
+#- name: actualizar apt
+ # apt:
+  #name: '*'
+  #state: lastest  
+
+- name: add repositories
+  apt: name={{ item }}
+  with_items:
+    - mysql-server
+    - python-mysqldb
+    - python-selinux
+    - libsemanage-python
+    
+    
+
+#- name: Configurar puerto para conectar
+ # seboolean: name=mysql_connect_any state=true persistent=yes
+  
+
+- name: Create database
+  mysql_db:
+    name: test
+    state: present
+
+- name: iniciar siempre mysql
+  service:
+    name: mysql-server
+    state: started
+    enabled: yes
