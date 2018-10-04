@@ -2,29 +2,34 @@
 #- name: actualizar apt
  # apt:
   #name: '*'
-  #state: lastest  
+  #state: lastest
+
 
 - name: add repositories
-  apt: name={{ item }}
+  apt: name={{ item }} state=present update_cache=yes
   with_items:
     - mysql-server
     - python-mysqldb
-    - python-selinux
-    - libsemanage-python
-    
-    
 
-#- name: Configurar puerto para conectar
- # seboolean: name=mysql_connect_any state=true persistent=yes
-  
+- name: Create Mysql configuration file
+  template: src=my.cnf.j2 dest=/etc/my.cnf
+  notify:
+  - restart mysql
+
+- name: iniciar siempre mysql
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+
+- name: Create User DB
+  mysql_user:
+    name: test
+    password: 123
+    priv: ALL
+    state: present
 
 - name: Create database
   mysql_db:
     name: test
     state: present
-
-- name: iniciar siempre mysql
-  service:
-    name: mysql-server
-    state: started
-    enabled: yes
