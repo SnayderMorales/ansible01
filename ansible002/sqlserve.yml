@@ -1,0 +1,6 @@
+---
+- name: Instalación y configuración de sqlserver
+  hosts: sql
+  remote_user: root
+  roles:
+   - sqlserver
